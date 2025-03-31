@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }}'s Profile</title>
+</head>
+<body>
+    <a href="{% url 'feed' %}">Home</a>
+    {% if is_owner %}
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% endif %}
+
+    <h1>{{ user.username }}</h1>
+    {% if user.avatar %}
+        <img src="{{ user.avatar.url }}" alt="{{ user.username }}" width="100">
+    {% endif %}
+    <p>{{ user.bio }}</p>
+
+    {% if is_owner %}
+        <h2>Add a Post</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Post</button>
+        </form>
+    {% endif %}
+
+    <h2>Posts</h2>
+    {% if posts %}
+        {% for post in posts %}
+            <div>
+                <img src="{{ post.image.url }}" alt="{{ post.caption }}" width="200">
+                <p>{{ post.caption }}</p>
+                <p>Posted on {{ post.created_at }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts yet.</p>
+    {% endif %}
+</body>
+</html>
